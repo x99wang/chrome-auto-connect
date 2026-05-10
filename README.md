@@ -1,11 +1,9 @@
 # Chrome Auto Connect
 
 [![npm version](https://img.shields.io/npm/v/chrome-auto-connect.svg)](https://www.npmjs.com/package/chrome-auto-connect)
-[![npm downloads](https://img.shields.io/npm/dm/chrome-auto-connect.svg)](https://www.npmjs.com/package/chrome-auto-connect)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/x99wang/chrome-auto-connect)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/x99wang/chrome-auto-connect/blob/main/LICENSE)
 [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)](https://www.apple.com/macos/)
-[![Shell](https://img.shields.io/badge/language-Bash-4EAA25.svg)](https://www.gnu.org/software/bash/)
 [![Node.js](https://img.shields.io/badge/Node.js-22.x-339933.svg)](https://nodejs.org/)
 [![Chrome DevTools](https://img.shields.io/badge/Chrome%20DevTools-CLI-4285F4.svg)](https://github.com/ChromeDevTools/chrome-devtools-mcp)
 [![AppleScript](https://img.shields.io/badge/AppleScript-supported-9966CC.svg)](https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/introduction/ASLR_intro.html)
