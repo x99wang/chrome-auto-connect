@@ -139,4 +139,4 @@ chrome-auto-connect/
 
 ## 许可证
 
-MIT License
+[MIT License](LICENSE)
