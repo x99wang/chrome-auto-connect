@@ -1,6 +1,5 @@
 # Chrome Auto Connect
 
-[![CI](https://github.com/x99wang/chrome-auto-connect/actions/workflows/ci.yml/badge.svg)](https://github.com/x99wang/chrome-auto-connect/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/chrome-auto-connect.svg)](https://www.npmjs.com/package/chrome-auto-connect)
 [![npm downloads](https://img.shields.io/npm/dm/chrome-auto-connect.svg)](https://www.npmjs.com/package/chrome-auto-connect)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/x99wang/chrome-auto-connect)
