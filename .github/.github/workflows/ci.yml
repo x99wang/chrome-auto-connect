@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck
+        run: |
+          shellcheck scripts/*.sh
+          echo "✅ ShellCheck passed"
+
+  node-check:
+    name: Node.js Syntax Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check JavaScript syntax
+        run: |
+          node -c scripts/check-pages.js
+          echo "✅ Node.js syntax check passed"
+
+  validate:
+    name: Validate Scripts
+    runs-on: macos-latest
+    needs: [shellcheck, node-check]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check bash syntax
+        run: |
+          for script in scripts/*.sh; do
+            bash -n "$script"
+            echo "✅ $script syntax valid"
+          done
+
+      - name: Check script permissions
+        run: |
+          for script in scripts/*.sh; do
+            if [ ! -x "$script" ]; then
+              echo "❌ $script is not executable"
+              exit 1
+            fi
+            echo "✅ $script is executable"
+          done
