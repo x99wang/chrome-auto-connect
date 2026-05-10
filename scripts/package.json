@@ -1,0 +1,9 @@
+{
+  "name": "chrome-cli-check-pages",
+  "version": "1.0.0",
+  "description": "Check Chrome page status via CDP",
+  "main": "chrome-cli-check-pages.js",
+  "dependencies": {
+    "ws": "^8.0.0"
+  }
+}

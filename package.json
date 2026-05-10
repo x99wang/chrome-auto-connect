@@ -1,0 +1,49 @@
+{
+  "name": "chrome-auto-connect",
+  "version": "1.0.0",
+  "description": "自动连接已运行的 Chrome 浏览器，并处理「允许调试」弹窗",
+  "main": "src/index.js",
+  "bin": {
+    "chrome-auto-connect": "src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "chrome",
+    "devtools",
+    "cdp",
+    "debug",
+    "automation",
+    "browser"
+  ],
+  "author": "x99wang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/x99wang/chrome-auto-connect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/x99wang/chrome-auto-connect/issues"
+  },
+  "homepage": "https://github.com/x99wang/chrome-auto-connect#readme",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "os": [
+    "darwin"
+  ],
+  "dependencies": {
+    "chrome-devtools-mcp": ">=0.25.0",
+    "ws": "^8.0.0"
+  },
+  "files": [
+    "src/",
+    "scripts/*.sh",
+    "scripts/*.js",
+    "scripts/*.applescript",
+    "SKILL.md",
+    "README.md"
+  ]
+}
