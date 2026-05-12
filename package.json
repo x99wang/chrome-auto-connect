@@ -1,6 +1,6 @@
 {
   "name": "chrome-auto-connect",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "自动连接已运行的 Chrome 浏览器，并处理「允许调试」弹窗",
   "main": "src/index.js",
   "bin": {
