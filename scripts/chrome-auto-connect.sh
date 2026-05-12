@@ -482,7 +482,7 @@ cmd_start() {
     # 8. 后台启动点击允许脚本（list_pages 会触发允许弹窗）
     log_info "后台启动点击允许脚本..."
     
-    # 使用 nohup 启动，使其完全独立于父进程
+    # 构造参数
     local watcher_args=""
     if [ "$DEBUG_MODE" = true ]; then
         watcher_args="$watcher_args --debug"
@@ -491,9 +491,15 @@ cmd_start() {
         watcher_args="$watcher_args --timeout $TIMEOUT"
     fi
     
-    nohup "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-listpages.log 2>&1 &
-    CLICK_ALLOW_PID=$!
-    log_debug "点击允许脚本 PID: $CLICK_ALLOW_PID"
+    # 使用 nohup 启动
+    nohup "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-listpages-nohup.log 2>&1 &
+    local pid_nohup=$!
+    log_debug "nohup 点击允许脚本 PID: $pid_nohup"
+    
+    # 使用 setsid 启动
+    setsid "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-listpages-setsid.log 2>&1 &
+    local pid_setsid=$!
+    log_debug "setsid 点击允许脚本 PID: $pid_setsid"
     
     # 等待点击脚本完全启动
     sleep 0.5
