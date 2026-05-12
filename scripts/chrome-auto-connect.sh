@@ -491,7 +491,8 @@ cmd_start() {
         watcher_args="$watcher_args --timeout $TIMEOUT"
     fi
     
-    nohup "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-listpages.log 2>&1 &
+    # 使用 stdbuf 禁用输出缓冲，避免脚本阻塞
+    nohup stdbuf -oL -eL "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-listpages.log 2>&1 &
     CLICK_ALLOW_PID=$!
     log_debug "点击允许脚本 PID: $CLICK_ALLOW_PID"
     
