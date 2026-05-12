@@ -4,7 +4,7 @@ const { execSync, spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 const SCRIPTS_DIR = path.join(__dirname, '..', 'scripts');
 
 // 颜色定义
