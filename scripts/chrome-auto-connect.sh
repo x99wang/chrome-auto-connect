@@ -228,7 +228,7 @@ wait_for_click_allow_watcher() {
     local timeout=15
     local elapsed=0
     while kill -0 $CLICK_ALLOW_PID 2>/dev/null && [ $elapsed -lt $timeout ]; do
-        sleep 1
+        sleep 0.5
         elapsed=$((elapsed + 1))
         log_debug "等待点击允许脚本... ($elapsed/$timeout)"
     done
@@ -496,7 +496,7 @@ cmd_start() {
     log_debug "点击允许脚本 PID: $CLICK_ALLOW_PID"
     
     # 等待点击脚本完全启动
-    sleep 1
+    sleep 0.5
     
     # 9. 调用原生 list_pages
     log_info "调用原生 list_pages..."
