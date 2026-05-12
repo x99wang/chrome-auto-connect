@@ -457,7 +457,14 @@ cmd_start() {
         echo ""
     fi
     
-    # 6. 连接 Chrome DevTools CLI
+    # 6. 关闭 check_pages 创建的连接
+    log_info "关闭 check_pages 创建的连接..."
+    chrome-devtools stop 2>/dev/null || true
+    if [ "$JSON_MODE" = false ]; then
+        echo ""
+    fi
+    
+    # 7. 连接 Chrome DevTools CLI
     if [ "$JSON_MODE" = true ]; then
         echo "{\"status\":\"connecting\",\"wsEndpoint\":\"$WS_ENDPOINT\",\"clickAllow\":\"$CLICK_ALLOW_RESULT\",\"note\":\"本脚本只负责连接并自动点击允许按钮，会话关闭请使用 chrome-devtools stop\"}"
     else
@@ -471,6 +478,32 @@ cmd_start() {
     
     # 执行连接命令
     chrome-devtools start --wsEndpoint "$WS_ENDPOINT"
+    
+    # 8. 后台启动点击允许脚本（list_pages 会触发允许弹窗）
+    log_info "后台启动点击允许脚本..."
+    
+    # 使用 nohup 启动，使其完全独立于父进程
+    local watcher_args=""
+    if [ "$DEBUG_MODE" = true ]; then
+        watcher_args="$watcher_args --debug"
+    fi
+    if [ -n "$TIMEOUT" ]; then
+        watcher_args="$watcher_args --timeout $TIMEOUT"
+    fi
+    
+    nohup "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-listpages.log 2>&1 &
+    CLICK_ALLOW_PID=$!
+    log_debug "点击允许脚本 PID: $CLICK_ALLOW_PID"
+    
+    # 等待点击脚本完全启动
+    sleep 1
+    
+    # 9. 调用原生 list_pages
+    log_info "调用原生 list_pages..."
+    chrome-devtools list_pages
+    
+    # 10. 等待点击允许脚本完成
+    wait_for_click_allow_watcher
 }
 
 # allow 命令：检测并点击「允许」
