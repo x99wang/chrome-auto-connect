@@ -597,13 +597,19 @@ cmd_allow() {
     
     # 异步模式（默认）
     log_debug "异步模式运行..."
-    "$WATCHER_SCRIPT" $watcher_args &
-    local pid=$!
+    
+    # 使用 nohup 启动
+    nohup "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-nohup.log 2>&1 &
+    local pid_nohup=$!
+    
+    # 使用 setsid 启动
+    setsid "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-setsid.log 2>&1 &
+    local pid_setsid=$!
     
     if [ "$JSON_MODE" = true ]; then
-        echo "{\"status\":\"ok\",\"pid\":$pid,\"message\":\"点击允许脚本已在后台启动\"}"
+        echo "{\"status\":\"ok\",\"pid_nohup\":$pid_nohup,\"pid_setsid\":$pid_setsid,\"message\":\"点击允许脚本已在后台启动\"}"
     else
-        log_info "点击允许脚本已在后台启动 (PID: $pid)"
+        log_info "点击允许脚本已在后台启动 (nohup PID: $pid_nohup, setsid PID: $pid_setsid)"
     fi
     
     return 0
