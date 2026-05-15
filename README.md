@@ -1,7 +1,7 @@
 # Chrome Auto Connect
 
 [![npm version](https://img.shields.io/npm/v/chrome-auto-connect.svg)](https://www.npmjs.com/package/chrome-auto-connect)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/x99wang/chrome-auto-connect)
+[![Version](https://img.shields.io/badge/version-1.0.3-blue.svg)](https://github.com/x99wang/chrome-auto-connect)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/x99wang/chrome-auto-connect/blob/main/LICENSE)
 [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)](https://www.apple.com/macos/)
 [![Node.js](https://img.shields.io/badge/Node.js-22.x-339933.svg)](https://nodejs.org/)

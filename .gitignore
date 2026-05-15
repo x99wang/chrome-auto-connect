@@ -3,3 +3,5 @@ dist
 .DS_Store
 *.tgz
 package-lock.json
+video/out/
+video/prompt.md
