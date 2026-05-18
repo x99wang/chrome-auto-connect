@@ -77,7 +77,7 @@ chrome-auto-connect status --debug
 
 | 命令 | 说明 |
 |------|------|
-| `status` | 检查环境、页面状态，输出连接命令 |
+| `status` | 检查环境、页面状态（问题页面仅作 warning 不阻断），输出连接命令 |
 | `start` | 自动连接 Chrome DevTools CLI |
 | `allow` | 检测并点击「允许」按钮 |
 
@@ -114,15 +114,15 @@ chrome-auto-connect/
 ├── src/                           # Node.js 源码
 │   └── cli.js                     # CLI 入口文件
 ├── scripts/                       # 脚本目录
-│   ├── chrome-auto-connect.sh     # 主脚本
-│   ├── check-pages.js             # 页面检查脚本
-│   ├── allow-clicker.sh           # 监听脚本
-│   └── allow-clicker.applescript  # 检测脚本
+│   ├── chrome-auto-connect.sh     # 主脚本 (status / start / allow)
+│   ├── check-pages.js             # CDP 页面检查
+│   ├── allow-clicker.sh           # 弹窗监听
+│   └── allow-clicker.applescript  # 弹窗检测 (AppleScript)
 ├── docs/                          # 文档目录
-│   └── chrome-devtools-cli-connection-guide.md  # 连接指南
 ├── package.json                   # npm 包配置
-├── SKILL.md                       # 智能体技能文件
-└── README.md                      # 说明文档
+├── SKILL.md                       # Claude Code 技能文件
+├── README.md
+└── LICENSE
 ```
 
 ## 依赖
@@ -131,6 +131,23 @@ chrome-auto-connect/
 - [Node.js](https://nodejs.org/) - JavaScript 运行时（>=22.0.0）
 - [AppleScript](https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/introduction/ASLR_intro.html) - macOS 自动化脚本
 - [ws](https://github.com/websockets/ws) - WebSocket 客户端库
+
+## 常见问题
+
+### 为什么 status 报告"发现问题页面"但工具仍能连接？
+
+`chrome://`、`chrome-extension://` 等内部页面可能在某些情况下导致 `list_pages` 卡住，但这并非必然。工具会以 warning 形式报告，**不会阻断连接**。如果连接后 `list_pages` 正常，可以忽略这些 warning。
+
+### status 和 start 有什么区别？
+
+- **status**：诊断命令，检查环境、WS 端点、页面状态，输出连接建议。不会修改任何状态。
+- **start**：直接连接 Chrome DevTools CLI 并执行 `list_pages`，自动处理弹窗。适合日常开发使用。
+
+### 弹窗没有被自动点击怎么办？
+
+1. 检查辅助功能权限：系统设置 → 隐私与安全性 → 辅助功能，确保终端（或 iTerm2）已授权
+2. 使用 `chrome-auto-connect allow --sync` 手动触发一次点击
+3. 增加超时：`chrome-auto-connect allow --timeout 10`
 
 ## Star History
 
