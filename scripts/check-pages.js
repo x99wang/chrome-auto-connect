@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// chrome-cli-check-pages.js
+// check-pages.js — CDP page status checker for chrome-auto-connect
 // 通过 CDP 协议检查页面状态
 
 const WebSocket = require('ws');
@@ -11,7 +11,7 @@ const wsEndpoint = args.find(arg => !arg.startsWith('--'));
 
 if (!wsEndpoint) {
     console.error('错误：请提供 WebSocket endpoint');
-    console.error('用法：node chrome-cli-check-pages.js <ws-endpoint> [--debug]');
+    console.error('用法：node check-pages.js <ws-endpoint> [--debug]');
     process.exit(1);
 }
 

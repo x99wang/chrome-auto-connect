@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-const { execSync, spawn } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const VERSION = '1.0.4';
+const VERSION = '1.0.5';
 const SCRIPTS_DIR = path.join(__dirname, '..', 'scripts');
 
 // 颜色定义
@@ -78,29 +78,6 @@ function runScript(scriptName, args = []) {
   });
 }
 
-function runNodeScript(scriptName, args = []) {
-  const scriptPath = getScriptPath(scriptName);
-  
-  if (!fs.existsSync(scriptPath)) {
-    console.error(`${colors.red}错误: 脚本不存在: ${scriptPath}${colors.reset}`);
-    process.exit(1);
-  }
-
-  const child = spawn('node', [scriptPath, ...args], {
-    stdio: 'inherit',
-    cwd: SCRIPTS_DIR
-  });
-
-  child.on('exit', (code) => {
-    process.exit(code || 0);
-  });
-
-  child.on('error', (err) => {
-    console.error(`${colors.red}错误: ${err.message}${colors.reset}`);
-    process.exit(1);
-  });
-}
-
 // 解析参数
 const args = process.argv.slice(2);
 let command = '';
@@ -138,12 +115,10 @@ for (let i = 0; i < args.length; i++) {
     case '--help':
       showHelp();
       process.exit(0);
-      break;
     case '-v':
     case '--version':
       showVersion();
       process.exit(0);
-      break;
     default:
       if (!command && !arg.startsWith('-')) {
         command = arg;

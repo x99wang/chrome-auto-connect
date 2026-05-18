@@ -29,7 +29,7 @@ chrome-auto-connect status [--json] [--debug]
 
 **返回值：**
 - 无问题页面：`{"status":"ok","problems":[],"wsEndpoint":"ws://..."}`
-- 有问题页面：`{"status":"error","problems":[...],"wsEndpoint":"ws://..."}`
+- 有问题页面（非致命）：`{"status":"ok","problems":[...],"wsEndpoint":"ws://..."}`
 
 ### 自动连接
 
@@ -41,8 +41,9 @@ chrome-auto-connect start [--json] [--debug]
 1. 检查环境依赖
 2. 获取 WebSocket 连接地址
 3. 后台启动点击允许脚本
-4. 检查页面状态
-5. 自动连接 Chrome DevTools CLI
+4. 连接 Chrome DevTools CLI（不触发弹窗）
+5. 调用 list_pages（触发允许弹窗，脚本自动点击）
+6. 等待弹窗处理完成
 
 ### 检测并点击「允许」
 

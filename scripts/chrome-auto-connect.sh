@@ -7,7 +7,7 @@
 #   ./chrome-auto-connect.sh start [--debug] [--json] [--timeout <seconds>]
 #   ./chrome-auto-connect.sh allow [--debug] [--json] [--sync] [--timeout <seconds>]
 
-VERSION="1.0.0"
+VERSION="1.0.5"
 
 set -e
 
@@ -50,7 +50,7 @@ show_help() {
 }
 
 show_version() {
-    echo "chrome-cli v$VERSION"
+    echo "chrome-auto-connect v$VERSION"
 }
 
 # 解析参数
@@ -349,13 +349,13 @@ check_pages() {
         local json=$(echo "$result" | sed -n '/PROBLEMS_FOUND/,/^$/p' | tail -n +2)
         
         if [ "$JSON_MODE" = true ]; then
-            echo "{\"status\":\"error\",\"problems\":$json,\"wsEndpoint\":\"$WS_ENDPOINT\"}"
+            echo "{\"status\":\"ok\",\"problems\":$json,\"wsEndpoint\":\"$WS_ENDPOINT\"}"
         else
-            log_warn "发现问题页面"
+            log_warn "发现问题页面（非致命，仍可连接）"
             echo ""
-            echo "检查完成，发现以下问题页面："
+            echo "发现以下页面可能影响连接稳定性："
             echo ""
-            
+
             # 解析并显示问题页面
             echo "$json" | node -e "
                 const data = JSON.parse(require('fs').readFileSync('/dev/stdin', 'utf8'));
@@ -366,10 +366,8 @@ check_pages() {
                     console.log('');
                 });
             "
-            
-            echo "建议关闭这些页面后再连接。"
         fi
-        return 1
+        return 0
     else
         log_error "未知的检查结果: $result"
         return 1
@@ -425,48 +423,29 @@ cmd_start() {
         echo "========================"
         echo ""
     fi
-    
+
     # 1. 检查环境
     check_environment
     if [ "$JSON_MODE" = false ]; then
         echo ""
     fi
-    
+
     # 2. 获取 WebSocket 连接地址
     get_ws_endpoint
     if [ "$JSON_MODE" = false ]; then
         echo ""
     fi
-    
-    # 3. 后台启动点击允许脚本（等待可能的弹窗）
+
+    # 3. 后台启动点击允许脚本（list_pages 会触发允许弹窗）
     log_debug "后台启动点击允许脚本..."
     run_click_allow_watcher_in_background
     if [ "$JSON_MODE" = false ]; then
         echo ""
     fi
-    
-    # 4. 检查页面状态（会建立 WS 连接，可能触发允许弹窗）
-    check_pages
-    if [ "$JSON_MODE" = false ]; then
-        echo ""
-    fi
-    
-    # 5. 等待点击允许脚本完成
-    wait_for_click_allow_watcher
-    if [ "$JSON_MODE" = false ]; then
-        echo ""
-    fi
-    
-    # 6. 关闭 check_pages 创建的连接
-    log_info "关闭 check_pages 创建的连接..."
-    chrome-devtools stop 2>/dev/null || true
-    if [ "$JSON_MODE" = false ]; then
-        echo ""
-    fi
-    
-    # 7. 连接 Chrome DevTools CLI
+
+    # 4. 连接 Chrome DevTools CLI（此步骤不触发弹窗）
     if [ "$JSON_MODE" = true ]; then
-        echo "{\"status\":\"connecting\",\"wsEndpoint\":\"$WS_ENDPOINT\",\"clickAllow\":\"$CLICK_ALLOW_RESULT\",\"note\":\"本脚本只负责连接并自动点击允许按钮，会话关闭请使用 chrome-devtools stop\"}"
+        echo "{\"status\":\"connecting\",\"wsEndpoint\":\"$WS_ENDPOINT\",\"note\":\"脚本只负责连接并自动点击允许按钮，会话关闭请使用 chrome-devtools stop\"}"
     else
         log_info "正在连接 Chrome DevTools CLI..."
         echo "执行命令: chrome-devtools start --wsEndpoint \"$WS_ENDPOINT\""
@@ -475,40 +454,14 @@ cmd_start() {
         echo "会话关闭请使用原生命令：chrome-devtools stop"
         echo ""
     fi
-    
-    # 执行连接命令
+
     chrome-devtools start --wsEndpoint "$WS_ENDPOINT"
-    
-    # 8. 后台启动点击允许脚本（list_pages 会触发允许弹窗）
-    log_info "后台启动点击允许脚本..."
-    
-    # 构造参数
-    local watcher_args=""
-    if [ "$DEBUG_MODE" = true ]; then
-        watcher_args="$watcher_args --debug"
-    fi
-    if [ -n "$TIMEOUT" ]; then
-        watcher_args="$watcher_args --timeout $TIMEOUT"
-    fi
-    
-    # 使用 nohup 启动
-    nohup "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-listpages-nohup.log 2>&1 &
-    local pid_nohup=$!
-    log_debug "nohup 点击允许脚本 PID: $pid_nohup"
-    
-    # 使用 setsid 启动
-    setsid "$WATCHER_SCRIPT" $watcher_args > /tmp/allow-clicker-listpages-setsid.log 2>&1 &
-    local pid_setsid=$!
-    log_debug "setsid 点击允许脚本 PID: $pid_setsid"
-    
-    # 等待点击脚本完全启动
-    sleep 0.5
-    
-    # 9. 调用原生 list_pages
-    log_info "调用原生 list_pages..."
+
+    # 5. 调用 list_pages（触发允许弹窗，watcher 自动点击）
+    log_info "调用 list_pages..."
     chrome-devtools list_pages
-    
-    # 10. 等待点击允许脚本完成
+
+    # 6. 等待点击允许脚本完成
     wait_for_click_allow_watcher
 }
 
