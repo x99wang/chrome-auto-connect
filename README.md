@@ -73,6 +73,25 @@ chrome-auto-connect status --json
 chrome-auto-connect status --debug
 ```
 
+> **重要：MCP 环境 vs 原生 CLI**
+>
+> 本工具常用于 Agent 自动化工作流。在 Chrome DevTools 生态中有两种连接方式：
+>
+> - **原生 CLI**（`chrome-devtools` 命令）：本工具已自动处理，无需额外配置。
+> - **MCP 服务端**（`chrome-devtools-mcp`）：如果通过 MCP 使用 Chrome DevTools，**务必在 MCP 配置中添加 `--auto-connect` 参数**。否则 MCP 会忽略已运行的 Chrome 会话，强制打开一个新的浏览器实例，导致本工具的自动连接失效。
+>
+> ```json
+> // MCP 配置示例（如 .claude/settings.json 或 mcp.json）
+> {
+>   "mcpServers": {
+>     "chrome-devtools": {
+>       "command": "npx",
+>       "args": ["chrome-devtools-mcp", "--auto-connect"]
+>     }
+>   }
+> }
+> ```
+
 ## 命令
 
 | 命令 | 说明 |

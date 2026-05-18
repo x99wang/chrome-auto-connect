@@ -153,6 +153,20 @@ fi
    - Node.js - 通过 `npx` 或 `npm` 运行时
 3. **Chrome 远程调试**：需要在 Chrome 中开启远程调试
 4. **会话管理**：`start` 命令只负责连接，会话关闭需要使用 `chrome-devtools stop`
+5. **MCP 环境必须加 `--auto-connect`**：如果通过 `chrome-devtools-mcp` 使用 Chrome DevTools，必须在 MCP 配置中添加 `--auto-connect` 参数，否则 MCP 会打开新的浏览器实例而非复用当前会话：
+
+```json
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp", "--auto-connect"]
+    }
+  }
+}
+```
+
+原生 CLI（`chrome-devtools` 命令）无此问题，本工具已自动处理。
 
 ## 相关链接
 
